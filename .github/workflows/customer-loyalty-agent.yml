@@ -38,7 +38,24 @@ jobs:
       - name: Create .env file from secret
         working-directory: ./src
         run: |
-          echo "${{ secrets.ENV }}" > .env
+          cat > .env << 'EOF'
+          ${{ secrets.ENV }}
+          EOF
+      
+      - name: Debug - Verify .env file was created
+        working-directory: ./src
+        run: |
+          echo "Checking if .env file exists..."
+          if [ -f .env ]; then
+            echo "✓ .env file exists"
+            echo "File size: $(wc -c < .env) bytes"
+            echo "Line count: $(wc -l < .env) lines"
+            echo "First few variable names (without values):"
+            grep -E "^[A-Z_]+=" .env | cut -d= -f1 | head -10 || echo "No variables found"
+          else
+            echo "✗ .env file NOT found"
+            exit 1
+          fi
       
       - name: Execute Customer Loyalty Agent
         working-directory: ./src
