@@ -51,7 +51,7 @@ jobs:
             echo "File size: $(wc -c < .env) bytes"
             echo "Line count: $(wc -l < .env) lines"
             echo "First few variable names (without values):"
-            grep -E "^[A-Z_]+=" .env | cut -d= -f1 | head -10 || echo "No variables found"
+            grep -E "^[A-Za-z_][A-Za-z0-9_]*=" .env | cut -d= -f1 | head -10 || echo "No variables found"
           else
             echo "✗ .env file NOT found"
             exit 1
